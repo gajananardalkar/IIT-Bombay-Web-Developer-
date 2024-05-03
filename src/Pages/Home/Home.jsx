@@ -11,58 +11,65 @@ export default function Home() {
     const todoData = useSelector((state) => state.menu.todoTask)
     const ongoingData = useSelector((state) => state.menu.ongoingTask)
     const completedData = useSelector((state) => state.menu.completedTask)
-    console.log(todoData, ongoingData, completedData);
+    // console.log(todoData, ongoingData, completedData);
 
-    var ToDoCard = [
-        { id: uuidv4(), Title: "Frontend Task", Description: "This is the example of sescription which will have minimum 25 char" },
-        { id: uuidv4(), Title: "Other Task", Description: "This is the example of sescription which will have minimum 25 char" }
-    ];
-
-    var OngoingCard = [
-        { id: uuidv4(), Title: "Old Task", Description: "This is the example of sescription which will have minimum 25 char" },
-        { id: uuidv4(), Title: "Problem Reading", Description: "This is the example of sescription which will have minimum 25 char" }
-    ];
-
-    var CompletedCard=  [
-        { id: uuidv4(), Title: "Project Enhancements", Description: "This is the example of sescription which will have minimum 25 char" },
-        { id: uuidv4(), Title: "New Learnings", Description: "This is the example of sescription which will have minimum 25 char" },
-        { id: uuidv4(), Title: "Excercise", Description: "This is the example of sescription which will have minimum 25 char" }
-    ]
-
-    const [form, setForm] = useState(false)
-    const [cardData, setcardData] = useState({})
-    // const [ToDoCard, setToDoCard] = useState([
+    // var ToDoCard = [
     //     { id: uuidv4(), Title: "Frontend Task", Description: "This is the example of sescription which will have minimum 25 char" },
     //     { id: uuidv4(), Title: "Other Task", Description: "This is the example of sescription which will have minimum 25 char" }
-    // ]);
-    // const [OngoingCard, setOngoingCard] = useState([
+    // ];
+
+    // var OngoingCard = [
     //     { id: uuidv4(), Title: "Old Task", Description: "This is the example of sescription which will have minimum 25 char" },
     //     { id: uuidv4(), Title: "Problem Reading", Description: "This is the example of sescription which will have minimum 25 char" }
-    // ]);
-    // const [CompletedCard, setCompletedCard] = useState([
+    // ];
+
+    // var CompletedCard=  [
     //     { id: uuidv4(), Title: "Project Enhancements", Description: "This is the example of sescription which will have minimum 25 char" },
     //     { id: uuidv4(), Title: "New Learnings", Description: "This is the example of sescription which will have minimum 25 char" },
     //     { id: uuidv4(), Title: "Excercise", Description: "This is the example of sescription which will have minimum 25 char" }
     // ]
-    // );
+
+    const [form, setForm] = useState(false)
+    const [cardData, setcardData] = useState({})
+    const [ToDoCard, setToDoCard] = useState([
+        { id: uuidv4(), Title: "Frontend Task", Description: "This is the example of sescription which will have minimum 25 char" },
+        { id: uuidv4(), Title: "Other Task", Description: "This is the example of sescription which will have minimum 25 char" }
+    ]);
+    const [OngoingCard, setOngoingCard] = useState([
+        { id: uuidv4(), Title: "Old Task", Description: "This is the example of sescription which will have minimum 25 char" },
+        { id: uuidv4(), Title: "Problem Reading", Description: "This is the example of sescription which will have minimum 25 char" }
+    ]);
+    const [CompletedCard, setCompletedCard] = useState([
+        { id: uuidv4(), Title: "Project Enhancements", Description: "This is the example of sescription which will have minimum 25 char" },
+        { id: uuidv4(), Title: "New Learnings", Description: "This is the example of sescription which will have minimum 25 char" },
+        { id: uuidv4(), Title: "Excercise", Description: "This is the example of sescription which will have minimum 25 char" }
+    ]
+    );
 
     useEffect(() => {
         if (cardData.selectColumn === "todo") {
-            // setToDoCard(prevToDoCard => [...prevToDoCard, cardData]);
-            ToDoCard = [...ToDoCard,cardData]
+            setToDoCard(prevToDoCard => [...prevToDoCard, cardData]);
+            dispatch(saveTodoTask({ todoTask: ToDoCard }))
+            // ToDoCard = [...ToDoCard,cardData]
         } else if (cardData.selectColumn === 'doing') {
-            // setOngoingCard(prevToDoCard => [...prevToDoCard, cardData]);
-            OngoingCard = [...OngoingCard,cardData]
+            setOngoingCard(prevToDoCard => [...prevToDoCard, cardData]);
+            dispatch(saveOngoingTask({ ongoingTask: OngoingCard }))
+
+            // OngoingCard = [...OngoingCard,cardData]
         } else if (cardData.selectColumn === 'done') {
-            // setCompletedCard(prevToDoCard => [...prevToDoCard, cardData]);
-            CompletedCard = [...CompletedCard, cardData]
+            setCompletedCard(prevToDoCard => [...prevToDoCard, cardData]);
+            dispatch(saveCompletedTask({ completedTask: CompletedCard }))
+            // CompletedCard = [...CompletedCard, cardData]
         }
 
+       
+    }, [cardData]);
+
+    useEffect(()=>{
         dispatch(saveTodoTask({ todoTask: ToDoCard }))
         dispatch(saveOngoingTask({ ongoingTask: OngoingCard }))
         dispatch(saveCompletedTask({ completedTask: CompletedCard }))
-
-    }, []);
+    },[CompletedCard,OngoingCard,ToDoCard])
 
     const handleDragStart = (e, card, sourceColumn) => {
         e.dataTransfer.setData('text/plain', JSON.stringify({ card, sourceColumn }));
@@ -82,19 +89,21 @@ export default function Home() {
         switch (sourceColumn) {
             case 'ToDo':
                 updatedToDoCard = ToDoCard.filter((c) => c.id !== card.id);
-                // setToDoCard(updatedToDoCard)
+                setToDoCard(updatedToDoCard)
+
+                console.log(updatedToDoCard,"updatedToDoCard")
                 dispatch(saveTodoTask({ todoTask: updatedToDoCard }))
 
                 break;
             case 'Ongoing':
                 updatedOngoingCard = OngoingCard.filter((c) => c.id !== card.id);
-                // setOngoingCard(updatedOngoingCard)
+                setOngoingCard(updatedOngoingCard)
                 dispatch(saveOngoingTask({ ongoingTask: updatedOngoingCard }))
 
                 break;
             case 'Completed':
                 updatedCompletedCard = CompletedCard.filter((c) => c.id !== card.id);
-                // setCompletedCard(updatedCompletedCard)
+                setCompletedCard(updatedCompletedCard)
                 dispatch(saveCompletedTask({ completedTask: updatedCompletedCard }))
 
                 break;
@@ -105,18 +114,18 @@ export default function Home() {
         switch (targetColumn) {
             case 'ToDo':
                 const newTodo = [...updatedToDoCard, card]
-                // setToDoCard([...updatedToDoCard, card]);
+                setToDoCard([...updatedToDoCard, card]);
                 dispatch(saveTodoTask({ todoTask: newTodo }))
                 break;
             case 'Ongoing':
                 const newOngoing = [...updatedOngoingCard, card]
-                // setOngoingCard([...updatedOngoingCard, card]);
+                setOngoingCard([...updatedOngoingCard, card]);
                 dispatch(saveOngoingTask({ ongoingTask: newOngoing }))
 
                 break;
             case 'Completed':
                 const newCompleted = [...updatedCompletedCard, card]
-                // setCompletedCard([...updatedCompletedCard, card]);
+                setCompletedCard([...updatedCompletedCard, card]);
                 dispatch(saveCompletedTask({ completedTask: newCompleted }))
 
                 break;

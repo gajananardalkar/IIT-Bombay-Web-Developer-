@@ -1,15 +1,21 @@
-import { createStore } from "redux";
-import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
+import {  persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage"; 
 import menuReducer from './todoSlice';
+import {combineReducers, configureStore} from '@reduxjs/toolkit'
+import { version } from "react";
 
 const persistConfig = {
   key: 'root',
+  version:1,
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, menuReducer);
-const store = createStore(persistedReducer);
-const persistor = persistStore(store);
+const reducer = combineReducers({
+  menu: menuReducer
+})
 
-export { store, persistor };
+const persistedReducer = persistReducer(persistConfig, reducer);
+
+export const store = configureStore({
+  reducer:persistedReducer
+})
