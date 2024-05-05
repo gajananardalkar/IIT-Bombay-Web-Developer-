@@ -4,6 +4,8 @@ import * as Yup from 'yup';
 import './AddForm.css'
 import { Button } from 'react-bootstrap';
 import Backdrop from '../BackDrop/Backdrop';
+import { IoIosCloseCircle } from "react-icons/io";
+
 // const Backdrop = () => (
 //     <div
 //         style={{
@@ -46,11 +48,15 @@ export default function AddForm({setcardData,setForm}) {
                 setSubmitting(false);
                 setcardData(values)
                 setForm(false);
+
             }
 
         },
     });
+ const closeform = ()=>{
+    setForm(false);
 
+ }
     return (
         <Fragment>
             <Backdrop />
@@ -72,6 +78,7 @@ export default function AddForm({setcardData,setForm}) {
                     borderRadius: '12px',
                 }}
             >
+                <span style={{position:"absolute", right:"15px", top:"15px", cursor:"pointer"}} onClick={closeform}><IoIosCloseCircle color='red' fontSize='22px'/></span>
                 <div className='formField' >
                     <label htmlFor="selectColumn">Column</label>
                     <select

@@ -11,7 +11,6 @@ export default function Home() {
     const todoData = useSelector((state) => state.menu.todoTask)
     const ongoingData = useSelector((state) => state.menu.ongoingTask)
     const completedData = useSelector((state) => state.menu.completedTask)
-    // console.log(todoData, ongoingData, completedData);
 
     // var ToDoCard = [
     //     { id: uuidv4(), Title: "Frontend Task", Description: "This is the example of sescription which will have minimum 25 char" },
@@ -62,14 +61,16 @@ export default function Home() {
             // CompletedCard = [...CompletedCard, cardData]
         }
 
-       
+
     }, [cardData]);
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(saveTodoTask({ todoTask: ToDoCard }))
         dispatch(saveOngoingTask({ ongoingTask: OngoingCard }))
         dispatch(saveCompletedTask({ completedTask: CompletedCard }))
-    },[CompletedCard,OngoingCard,ToDoCard])
+
+        console.log("---todoData---",todoData, "---ongoingData---",ongoingData, "---ongoingData---",completedData);
+    }, [CompletedCard, OngoingCard, ToDoCard])
 
     const handleDragStart = (e, card, sourceColumn) => {
         e.dataTransfer.setData('text/plain', JSON.stringify({ card, sourceColumn }));
@@ -91,7 +92,7 @@ export default function Home() {
                 updatedToDoCard = ToDoCard.filter((c) => c.id !== card.id);
                 setToDoCard(updatedToDoCard)
 
-                console.log(updatedToDoCard,"updatedToDoCard")
+                console.log(updatedToDoCard, "updatedToDoCard")
                 dispatch(saveTodoTask({ todoTask: updatedToDoCard }))
 
                 break;
